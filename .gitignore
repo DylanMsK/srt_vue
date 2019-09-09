@@ -1,5 +1,4 @@
 .DS_Store
-node_modules
 /dist
 
 # local env files
@@ -19,3 +18,17 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+### Firebase ###
+**/node_modules/*
+**/.firebaserc
+
+### Firebase Patch ###
+.runtimeconfig.json
+.firebase/
+
+### Vuejs ###
+node_modules/
+dist/
+npm-debug.log
+yarn-error.log
