@@ -1,16 +1,12 @@
 <template>
   <v-row no-gutters>
-    <template v-if="!isAuthenticated">
-      <v-col class="justify-center col-12" style="display:flex">
-        <LoginForm></LoginForm>
-      </v-col>
-    </template>
+    <v-col class="justify-center col-12" style="display:flex">
+      <LoginForm></LoginForm>
+    </v-col>
 
-    <template v-else>
-      <v-col class="justify-center col-12" style="display:flex">
-        <v-btn class="new-book" color="#4a2b46" large @click="goTo('reserve')">새로운 예약</v-btn>
-      </v-col>
-    </template>
+    <v-col class="justify-center col-12" style="display:flex">
+      <v-btn class="new-book" color="#4a2b46" large @click="goTo('reserve')">새로운 예약</v-btn>
+    </v-col>
   </v-row>
 </template>
 
@@ -27,9 +23,6 @@ export default {
     }
   },
   computed: {
-    isAuthenticated() {
-      return this.$store.getters.isAuthenticated
-    }
   }
 };
 </script>

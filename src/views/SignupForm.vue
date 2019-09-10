@@ -89,25 +89,24 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { required, minLength, between, numeric, email, sameAs } from 'vuelidate/lib/validators'
+import { required, minLength, maxLength, numeric, email, sameAs } from 'vuelidate/lib/validators'
 
 export default {
   name: 'signupForm',
   mixins: [validationMixin],
   validations: {
     phone: {
-      required,
       numeric,
-      between: between(10, 11) 
+      minLength: minLength(10),
+      maxLength: maxLength(11)
     },
     email: {
-      required,
       email
     },
     membership: {
-      required,
       numeric,
-      between: between(9, 11)
+      minLength: minLength(9),
+      maxLength: maxLength(11)
     },
     password: {
       required,
@@ -131,31 +130,35 @@ export default {
   methods: {
     clear() {
       this.$v.$reset()
-      this.loginType = 'phone',
-      this.email = ''
-      this.id = ''
-      this.password = '',
-      this.checkPassword = '',
+      this.loginType = 'phone'
       this.phone = ''
+      this.email = ''
+      this.membership = ''
+      this.password = ''
+      this.checkPassword = ''
     },
     signUp() {
       this.$v.$touch()
       if (this.$v.$invalid) {
         console.log('Validation Error!!')
         } else {
+          let srtId = ''
+          let formattedSrtId = ''
           if (this.loginType === 'email') {
-            this.email = this.id
+            formattedSrtId = this.email
+            srtId = this.email
           } else if (this.loginType === 'phone') {
-            this.email = this.id + '@srticket.com'
-            this.phone = this.id
+            formattedSrtId = this.phone + '@srticket.com'
+            srtId = this.phone
           } else {
-            this.email = this.id + '@srticket.com'
+            formattedSrtId = this.membership + '@srticket.com'
+            srtId = this.membership
           }
           this.$store.dispatch('userSignup', {
             loginType: this.loginType,
-            email: this.email,
-            id: this.id,
-            password: this.password,
+            email: formattedSrtId,
+            srtId: srtId,
+            srtPassword: this.password,
             phone: this.phone
           })
         this.clear()
@@ -169,9 +172,9 @@ export default {
       if (!this.$v.phone.$dirty) {
         return errors
       }
-      !this.$v.phone.required && errors.push('휴대폰번호를 확인해 주세요.')
       !this.$v.phone.numeric && errors.push('휴대폰번호는 숫자만 입력해 주세요.')
-      !this.$v.phone.between && errors.push('휴대폰번호는 10~11자리만 입력 가능합니다.')
+      !this.$v.phone.minLength && errors.push('휴대폰번호는 10~11자리만 입력 가능합니다.')
+      !this.$v.phone.maxLength && errors.push('휴대폰번호는 10~11자리만 입력 가능합니다.')
       return errors
     },
     emailErrors() {
@@ -179,7 +182,6 @@ export default {
       if (!this.$v.email.$dirty) {
         return errors
       }
-      !this.$v.email.required && errors.push('이메일 주소를 확인해 주세요.')
       !this.$v.email.email && errors.push('유효하지 않은 이메일주소입니다.')
       return errors
     },
@@ -188,9 +190,9 @@ export default {
       if (!this.$v.membership.$dirty) {
         return errors
       }
-      !this.$v.membership.required && errors.push('멤버쉽번호를 확인해 주세요.')
       !this.$v.membership.numeric && errors.push('멤버쉽번호는 숫자만 입력해 주세요.')
-      !this.$v.membership.between && errors.push('멤버쉽번호는 9~11자리만 입력 가능합니다.')
+      !this.$v.membership.minLength && errors.push('멤버쉽번호는 9~11자리만 입력 가능합니다.')
+      !this.$v.membership.maxLength && errors.push('멤버쉽번호는 9~11자리만 입력 가능합니다.')
       return errors
     },
     passwordErrors() {

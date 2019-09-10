@@ -132,9 +132,6 @@
 </template>
 
 <script>
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-
 import { validationMixin } from 'vuelidate'
 // import { required, email, minLength } from 'vuelidate/lib/validators'
 
@@ -291,16 +288,6 @@ export default {
     },
   },
   created() {
-    if (!this.$store.getters.isAuthenticated) {
-      this.$router.push({name: 'home'})
-    } else {
-      firebase.firestore().collection('users').doc(this.$store.state.user.uid).get().then(doc => {
-        const data = doc.data()
-        data.uid = doc.id
-        this.userInfo = data
-        this.phone = data.phone
-      })
-    }
   }
 }
 </script>

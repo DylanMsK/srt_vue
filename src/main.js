@@ -19,18 +19,10 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig)
 
-firebase.auth().onAuthStateChanged(user => {
-  new Vue({
-    el: '#app',
-    router,
-    store,
-    vuetify,
-    created() {
-      if (user) {
-        store.dispatch('autoSignin', user)
-        store.dispatch('checkPermission')
-      }
-    },
-    render: h => h(App)
-  })
+new Vue({
+  el: '#app',
+  router,
+  store,
+  vuetify,
+  render: h => h(App)
 })
