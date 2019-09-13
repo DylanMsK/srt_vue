@@ -1,9 +1,5 @@
 <template>
   <v-row no-gutters>
-    <v-col class="justify-center col-12 mt-12 mb-6 mt-sm-0" style="display:flex">
-      <h2 class="signup-header mt-6">회원가입</h2>
-    </v-col>
-
     <v-col class="justify-center col-12" style="display:flex">
       <v-form lazy-validation class="mt-12">
         <small>SRT사이트에서 사용하는 아이디/비밀번호와 동일하게 가입해주세요.</small>
@@ -51,7 +47,7 @@
           @blur="$v.password.$touch()"
           label="비밀번호"
           type="password"
-          @keyup.enter="login"
+          @keyup.enter="userRegister"
           required
         ></v-text-field>
 
@@ -63,7 +59,7 @@
           @blur="$v.checkPassword.$touch()"
           label="비밀번호"
           type="password"
-          @keyup.enter="signUp"
+          @keyup.enter="userRegister"
           required
         ></v-text-field>
 
@@ -77,11 +73,11 @@
           label="휴대폰 번호"
           hint="예매 성공시 문자 발송을 위해 사용됩니다."
           persistent-hint
-          @keyup.enter="signUp"
+          @keyup.enter="userRegister"
           required
         ></v-text-field>
 
-        <v-btn class="signup-btn mt-6" color="#4a2b46" large @click="signUp">가입하기</v-btn>
+        <v-btn class="signup-btn mt-6" color="#4a2b46" large @click="userRegister">가입하기</v-btn>
       </v-form>
     </v-col>
   </v-row>
@@ -89,7 +85,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { required, minLength, maxLength, numeric, email, sameAs } from 'vuelidate/lib/validators'
+import { required, requiredUnless, minLength, maxLength, numeric, email, sameAs } from 'vuelidate/lib/validators'
 
 export default {
   name: 'signupForm',
@@ -98,15 +94,18 @@ export default {
     phone: {
       numeric,
       minLength: minLength(10),
-      maxLength: maxLength(11)
+      maxLength: maxLength(11),
+      requiredUnless: requiredUnless('selectLoginType') 
     },
     email: {
-      email
+      email,
+      requiredUnless: requiredUnless('selectLoginType') 
     },
     membership: {
       numeric,
       minLength: minLength(9),
-      maxLength: maxLength(11)
+      maxLength: maxLength(11),
+      requiredUnless: requiredUnless('selectLoginType') 
     },
     password: {
       required,
@@ -137,41 +136,41 @@ export default {
       this.password = ''
       this.checkPassword = ''
     },
-    signUp() {
+    userRegister() {
       this.$v.$touch()
       if (this.$v.$invalid) {
         console.log('Validation Error!!')
         } else {
           let srtId = ''
-          let formattedSrtId = ''
-          if (this.loginType === 'email') {
-            formattedSrtId = this.email
-            srtId = this.email
+          if (this.loginType === 'membership') {
+            srtId = this.membership
           } else if (this.loginType === 'phone') {
-            formattedSrtId = this.phone + '@srticket.com'
             srtId = this.phone
           } else {
-            formattedSrtId = this.membership + '@srticket.com'
-            srtId = this.membership
+            srtId = this.email
           }
-          this.$store.dispatch('userSignup', {
+          this.$store.dispatch('userRegister', {
             loginType: this.loginType,
-            email: formattedSrtId,
-            srtId: srtId,
-            srtPassword: this.password,
+            username: srtId,
+            password: this.password,
             phone: this.phone
           })
         this.clear()
-        this.$router.push({name: 'home'})
+        alert('가입하신 아이디와 비밀번호로 로그인 해주세요.')
+        this.$router.push({name: 'login'})
       }
     },
   },
   computed: {
+    selectLoginType() {
+      return !!this.phone || !!this.email || !!this.membership
+    },
     phoneErrors() {
       const errors = []
       if (!this.$v.phone.$dirty) {
         return errors
       }
+      !this.$v.phone.requiredUnless && errors.push('휴대폰번호를 입력해 주세요.')
       !this.$v.phone.numeric && errors.push('휴대폰번호는 숫자만 입력해 주세요.')
       !this.$v.phone.minLength && errors.push('휴대폰번호는 10~11자리만 입력 가능합니다.')
       !this.$v.phone.maxLength && errors.push('휴대폰번호는 10~11자리만 입력 가능합니다.')
@@ -182,6 +181,7 @@ export default {
       if (!this.$v.email.$dirty) {
         return errors
       }
+      !this.$v.email.requiredUnless && errors.push('이메일주소를 입력해 주세요.')
       !this.$v.email.email && errors.push('유효하지 않은 이메일주소입니다.')
       return errors
     },
@@ -190,6 +190,7 @@ export default {
       if (!this.$v.membership.$dirty) {
         return errors
       }
+      !this.$v.membership.requiredUnless && errors.push('멤버쉽번호를 입력해 주세요.')
       !this.$v.membership.numeric && errors.push('멤버쉽번호는 숫자만 입력해 주세요.')
       !this.$v.membership.minLength && errors.push('멤버쉽번호는 9~11자리만 입력 가능합니다.')
       !this.$v.membership.maxLength && errors.push('멤버쉽번호는 9~11자리만 입력 가능합니다.')

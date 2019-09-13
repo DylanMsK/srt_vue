@@ -1,32 +1,36 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
 
 Vue.use(Router)
 
 export default new Router({
   mode: 'history',
-  // base: process.env.BASE_URL,
+  base: process.env.BASE_URL,
   routes: [
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: () => import('@/views/HomeView.vue')
     },
     {
       path: '/signup',
       name: 'signup',
-      component: () => import('@/views/SignupForm.vue')
+      component: () => import('@/views/SignupView.vue')
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('@/views/LoginView.vue')
     },
     {
       path: '/reserve',
       name: 'reserve',
-      component: () => import('@/views/TicketingForm.vue')
+      component: () => import('@/views/TicketingView.vue')
     },
     {
       path: '/riRnf',
       name: 'admin',
-      component: () => import('@/views/AdminPage.vue')
+      component: () => import('@/views/AdminView.vue')
     },
   ],
   scrollBehavior: () => ({ y: 0 })

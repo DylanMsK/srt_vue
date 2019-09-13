@@ -1,16 +1,13 @@
 <template>
   <v-app-bar app flat color="#fafafa" class="py-0 px-sm-12">
-    <!-- <v-toolbar-title><router-link class="home" to="/">SRTicket</router-link></v-toolbar-title> -->
     <v-toolbar-title @click="goTo('home')">SRTicket</v-toolbar-title>
 
     <v-spacer></v-spacer>
 
-    <v-toolbar-items>
-      <template v-if="isAuthenticated">
-        <v-btn v-if="isAdmin" text @click="goTo('admin')">관리자</v-btn>
-        <v-btn v-if="isAdmin" text @click="checkUser">체크유저</v-btn>
-        <v-btn text @click="signout">로그아웃</v-btn>
-      </template>
+    <v-toolbar-items v-if="isAuthenticated">
+      <v-btn text @click="goTo('admin')">관리자</v-btn>
+      <v-btn text @click="checkUser">체크유저</v-btn>
+      <v-btn text @click="signout">로그아웃</v-btn>
     </v-toolbar-items>
 
   </v-app-bar>
@@ -28,18 +25,16 @@ export default {
       router.push({name: pathName}).catch(err => {})
     },
     signout() {
-      this.$store.dispatch('userSignout')
+      this.$store.dispatch('userLogout')
+      this.$router.push({name: 'login'})
     },
     checkUser() {
-      console.log(this.$store.getters.getUser)
-    },
+      console.log(this.$store.getters.checkUser)
+    }
   },
   computed: {
     isAuthenticated() {
       return this.$store.getters.isAuthenticated
-    },
-    isAdmin() {
-      return this.$store.getters.isAdmin
     }
   }
 }
