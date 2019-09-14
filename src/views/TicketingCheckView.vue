@@ -100,12 +100,25 @@ export default {
         srtId: profile.srtId,
         srtPw: profile.srtPassword,
         logintype: profile.loginType,
-        dpt: this.depart,
-        arr: this.arrive,
+        dpt: this.dpt,
+        arr: this.arr,
         adult: this.adult,
         child: this.child,
         date: this.date,
-        dptime: this.time,
+        dptime: this.dptime,
+        ticketnum: tickets,
+        phone: this.phone
+      })
+      this.$store.dispatch('submitForm', {
+        srtId: profile.srtId,
+        srtPw: profile.srtPassword,
+        logintype: profile.loginType,
+        dpt: this.dpt,
+        arr: this.arr,
+        adult: this.adult,
+        child: this.child,
+        date: this.date,
+        dptime: this.dptime,
         ticketnum: tickets,
         phone: this.phone
       })
