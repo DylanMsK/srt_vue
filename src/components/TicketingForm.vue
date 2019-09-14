@@ -1,5 +1,5 @@
 <template>
-  <v-form>
+  <v-form lazy-validation>
     <v-container fluid>
       <v-row>
         <v-text-field
@@ -43,6 +43,9 @@
           <v-select
             v-model="adult"
             :items="numbers"
+            :error-messages="adultErrors"
+            @input="$v.adult.$touch()"
+            @blur="$v.adult.$touch()"
             label="어른"
             required
           ></v-select>
@@ -51,6 +54,9 @@
           <v-select
             v-model="child"
             :items="numbers"
+            :error-messages="childErrors"
+            @input="$v.child.$touch()"
+            @blur="$v.child.$touch()"
             label="아이"
             required
           ></v-select>
@@ -70,9 +76,9 @@
           >
             <template v-slot:activator="{ on }">
               <v-text-field
-                v-model="dateFormatted"
+                v-model="date"
                 label="출발일"
-                @blur="date = parseDate(dateFormatted)"
+                @blur="date = parseDate(formatDate(date))"
                 v-on="on"
                 required
               ></v-text-field>
@@ -87,6 +93,9 @@
           <v-select
             v-model="time"
             :items="timeList"
+            :error-messages="timeErrors"
+            @input="$v.time.$touch()"
+            @blur="$v.time.$touch()"
             label="탑승시간"
             required
           ></v-select>
@@ -112,8 +121,8 @@
 
               <v-divider></v-divider>
               <v-card-actions>
-                <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
-                <v-btn color="blue darken-1" text @click="dialog = false">Save</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="dialog = false">다음</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -127,8 +136,9 @@
       </v-row>
 
       <v-row>
-        <v-btn class="next-btn" color="#4a2b46" large @click="createReservation">예약신청하기</v-btn>
+        <v-btn class="next-btn" color="#4a2b46" :disabled="!checkSubmit" large @click="checkReserve">예약신청하기</v-btn>
       </v-row>
+
     </v-container>
   </v-form>
 </template>
@@ -145,9 +155,9 @@ export default {
       stations: ['수서', '동탄', '지제', '천안안산', '오송', '대전', '김천(구미)',
                    '동대구', '신경주', '울산(통도사)', '부산', '공주', '익산',
                    '정읍', '광주송정', '나주', '목포'],
-      numbers: [0, 1, 2, 3, 4, 5, 5, 6, 7, 8],
-      timeList: ['05', '06', '07', '08', '09', '10', '11', '12', '13', '14',
-              '15', '16', '17', '18', '19', '20', '21', '22', '23'],
+      numbers: ['0', '1', '2', '3', '4', '5', '6', '7', '8'],
+      timeList: ['04', '05', '06', '07', '08', '09', '10', '11', '12', '13',
+                 '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'],
       headers: [
         {
           text: '출발시간',
@@ -208,16 +218,17 @@ export default {
       ],
       dateMenu: false,
       timeMenu: false,
+      user: {},
       phone: '',
       depart: '',
       arrive: '',
-      adult: 0,
-      child: 0,
+      adult: '',
+      child: '',
       date: new Date().toISOString().substr(0, 10),
-      dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
+      // dateFormatted: this.formatDate(new Date().toISOString().substr(0, 10)),
       time: '',
       dialog: false,
-      selectedTimes: [1, 2, 3, 4, 5, 6, 7, 8],
+      selectedTimes: [],
     };
   },
   mixins: [validationMixin],
@@ -234,9 +245,35 @@ export default {
     arrive: {
       required,
       sameAs: sameAs('depart')
+    },
+    adult: {
+      required
+    },
+    child: {
+      required
+    },
+    time: {
+      required
     }
   },
   methods: {
+    checkReserve() {
+      const profile = this.$store.getters.getUser
+      this.$router.push({name: 'checkReserve', params: {
+        dpt: this.depart,
+        arr: this.arrive,
+        adult: this.adult,
+        child: this.child,
+        date: this.date,
+        dptime: this.time,
+        selectedTimes: this.selectedTimes,
+        phone: profile.phone
+      }})
+    },
+    initializeData() {
+      this.user = this.$store.getters.getUser
+      this.phone = this.user.phone
+    },
     formatDate(date) {
       if (!date) return null
       const [year, month, day] = date.split('-')
@@ -262,27 +299,44 @@ export default {
       this.$v.$touch()
       if (this.$v.invalid) {
         console.log('Validation Error!!')
-        } else {
-          console.log(this.userInfo)
-          // const tickets = this.selectedTimes.map(ticket => {
-          //   return ticket.ticketNumber
-          // })
-          // this.$store.dispatch('createReservation', {
-            // id: this.userInfo.id,
-            // password: this.userInfo.password,
-            // uid: this.userInfo.uid,
-            // depart: this.depart,
-            // arrive: this.arrive,
-            // adult: this.adult,
-            // child: this.child,
-            // date: this.date,
-            // tickets: tickets
-          // })
-          this.clear()
+      } else {
+        const profile = this.$store.getters.getUser
+        const tickets = this.selectedTimes.map(ticket => {
+          return ticket.ticketNumber
+        })
+        console.log({
+          srtId: profile.srtId,
+          srtPw: profile.srtPassword,
+          logintype: profile.loginType,
+          dpt: this.depart,
+          arr: this.arrive,
+          adult: this.adult,
+          child: this.child,
+          date: this.date,
+          dptime: this.time,
+          ticketnum: tickets,
+          phone: profile.phone
+        })
+        // this.$store.dispatch('createReservation', {
+          // id: this.userInfo.id,
+          // password: this.userInfo.password,
+          // uid: this.userInfo.uid,
+          // depart: this.depart,
+          // arrive: this.arrive,
+          // adult: this.adult,
+          // child: this.child,
+          // date: this.date,
+          // tickets: tickets
+        // })
+        // this.clear()
       }
     },
   },
   computed: {
+    checkSubmit() {
+      return !!this.phone && !!this.depart && !!this.arrive && !!this.adult &&
+             !!this.child && !!this.date && !!this.time && this.selectedTimes.length > 0
+    },
     phoneErrors() {
       const errors = []
       if (!this.$v.phone.$dirty) {
@@ -294,21 +348,40 @@ export default {
       !this.$v.phone.maxLength && errors.push('휴대폰번호는 10~11자리만 입력 가능합니다.')
       return errors
     },
-    departErrors () {
+    departErrors() {
       const errors = []
       if (!this.$v.depart.$dirty) return errors
-      !this.$v.depart.required && errors.push('출발역을 입력해주세요.')
+      !this.$v.depart.required && errors.push('출발역을 선택해해주세요.')
       return errors
     },
-    arriveErrors () {
+    arriveErrors() {
       const errors = []
       if (!this.$v.arrive.$dirty) return errors
-      !this.$v.arrive.required && errors.push('도착역을 입력해주세요.')
+      !this.$v.arrive.required && errors.push('도착역을 선택해주세요.')
       this.$v.arrive.sameAs && errors.push('도착역이 출발역과 같습니다.')
       return errors
     },
+    adultErrors() {
+      const errors = []
+      if (!this.$v.adult.$dirty) return errors
+      !this.$v.adult.required && errors.push('인원을 선택해 주세요.')
+      return errors
+    },
+    childErrors() {
+      const errors = []
+      if (!this.$v.child.$dirty) return errors
+      !this.$v.child.required && errors.push('인원을 선택해 주세요.')
+      return errors
+    },
+    timeErrors() {
+      const errors = []
+      if (!this.$v.time.$dirty) return errors
+      !this.$v.time.required && errors.push('탑승시간을 선택해 주세요.')
+      return errors
+    }
   },
   created() {
+    this.initializeData()
   }
 }
 </script>

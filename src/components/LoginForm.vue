@@ -35,17 +35,15 @@
     ></v-text-field>
 
     <v-text-field
-      class="mt-4"
+      class="mt-4 password"
       v-model="password"
       :error-messages="passwordErrors"
       @input="$v.password.$touch()"
       @blur="$v.password.$touch()"
       label="비밀번호"
-      type="password"
       @keyup.enter="userLogin"
       required
     ></v-text-field>
-
     <v-container class="mt-6">
       <v-row>
         <v-btn class="login-btn" color="#4a2b46" large @click="userLogin">로그인</v-btn>
@@ -187,6 +185,9 @@ export default {
 <style scoped>
 .login-form {
   width: 100%;
+}
+.password input {
+  ime-mode: disabled !important;
 }
 .login-btn {
   width: 100%;

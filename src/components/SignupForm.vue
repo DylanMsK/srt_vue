@@ -156,7 +156,7 @@ export default {
             phone: this.phone
           })
         this.clear()
-        alert('가입하신 아이디와 비밀번호로 로그인 해주세요.')
+        alert('회원가입이 완료되었습니다. 다시 로그인 해주세요.')
         this.$router.push({name: 'login'})
       }
     },

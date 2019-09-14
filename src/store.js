@@ -16,7 +16,7 @@ export default new Vuex.Store({
     isAuthenticated(state) {
       return state.user !== null && state.user !== undefined
     },
-    checkUser(state) {
+    getUser(state) {
       return state.user
     }
 
@@ -80,7 +80,7 @@ export default new Vuex.Store({
       commit('setLoading', true)
       const user = JSON.parse(localStorage.getItem('user'))
       api.userLogout(user.token).then(() => {
-        alert(`${user.username}, 정상적으로 로그아웃 되었습니다.`)
+        alert(`${user.username}님, 정상적으로 로그아웃 되었습니다.`)
         localStorage.removeItem('user')
         commit('setUser', null)
         commit('setLoading', false)
@@ -90,6 +90,11 @@ export default new Vuex.Store({
         commit('setLoading', false)
         commit('setError', err.message)
       })
+    },
+
+    submitForm({commit}, payload) {
+      commit('setLoading', true)
+      
     },
 
     // 장고로 저장하기

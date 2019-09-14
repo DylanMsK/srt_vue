@@ -28,6 +28,12 @@ export default new Router({
       component: () => import('@/views/TicketingView.vue')
     },
     {
+      path: '/reserve/check',
+      name: 'checkReserve',
+      props: true,
+      component: () => import('@/views/TicketingCheckView.vue')
+    },
+    {
       path: '/riRnf',
       name: 'admin',
       component: () => import('@/views/AdminView.vue')

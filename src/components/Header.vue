@@ -5,8 +5,8 @@
     <v-spacer></v-spacer>
 
     <v-toolbar-items v-if="isAuthenticated">
-      <v-btn text @click="goTo('admin')">관리자</v-btn>
-      <v-btn text @click="checkUser">체크유저</v-btn>
+      <!-- <v-btn text @click="goTo('admin')">관리자</v-btn>
+      <v-btn text @click="checkUser">체크유저</v-btn> -->
       <v-btn text @click="signout">로그아웃</v-btn>
     </v-toolbar-items>
 
@@ -29,7 +29,7 @@ export default {
       this.$router.push({name: 'login'})
     },
     checkUser() {
-      console.log(this.$store.getters.checkUser)
+      console.log(this.$store.getters.getUser)
     }
   },
   computed: {

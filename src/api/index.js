@@ -32,5 +32,6 @@ export default {
       method: 'post',
       headers: {'Authorization': 'hnd '+ token},
     })
-  }
+  },
+
 }
