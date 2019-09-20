@@ -28,6 +28,6 @@ export default {
   },
 
   userTickets(token) {
-    return axios.get(`${ticketUrl}/`, {headers: {"Authorization": "srt " + token}})
+    return axios.get(`${ticketUrl}`, {headers: {"Authorization": "srt " + token}})
   }
 }
