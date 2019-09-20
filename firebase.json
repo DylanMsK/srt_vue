@@ -7,7 +7,7 @@
       "**/node_modules/**"
     ],
     "rewrite": {
-      "source": "**",
+      "source": "/",
       "destination": "/index.html"
     }
   }

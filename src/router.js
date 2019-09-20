@@ -38,6 +38,11 @@ export default new Router({
       name: 'manage',
       component: () => import('@/views/AdminView.vue')
     },
+    // {
+    //   path: '*',
+    //   name: '404',
+    //   component: () => import('@/views/PageNotFoundView.vue')
+    // }
   ],
   scrollBehavior: () => ({ y: 0 })
 })

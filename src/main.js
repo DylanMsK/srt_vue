@@ -28,6 +28,7 @@ new Vue({
     if ('user' in localStorage) {
       store.dispatch('autoLogin', JSON.parse(localStorage.getItem('user')))
     } else {
+      // eslint-disable-next-line
       router.push({name: 'login'}).catch(err => {})
     }
   },
