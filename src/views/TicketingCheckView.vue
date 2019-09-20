@@ -1,26 +1,26 @@
 <template>
   <v-row no-gutters>
-    <v-col class="col-12 mt-12 mt-sm-0" style="display:flex">
+    <v-col class="col-12 mt-6 mt-sm-0" style="display:flex">
       <span class="sub-header">탑승날짜</span>
-      <span class="content">{{formatedDate}}</span>
+      <span class="content">{{ticketInfo.formatedDate}}</span>
     </v-col>
 
     <v-col class="col-6 mt-6">
       <span class="sub-header">출발역</span>
-      <span class="content">{{dpt}}역</span>
+      <span class="content">{{ticketInfo.dpt}}역</span>
     </v-col>
     <v-col class="col-6 mt-6">
       <span class="sub-header">도착역</span>
-      <span class="content">{{arr}}역</span>
+      <span class="content">{{ticketInfo.arr}}역</span>
     </v-col>
 
     <v-col class="col-6 mt-6">
       <span class="sub-header">어른</span>
-      <span class="content">{{adult}} 명</span>
+      <span class="content">{{ticketInfo.adult}} 명</span>
     </v-col>
     <v-col class="col-6 mt-6">
       <span class="sub-header">아이</span>
-      <span class="content">{{child}} 명</span>
+      <span class="content">{{ticketInfo.child}} 명</span>
     </v-col>
 
     <v-col class="col-12 mt-6 mb-1">
@@ -31,7 +31,7 @@
         <tr>
           <th>No.</th><th>출발시간</th><th>도착시간</th>
         </tr>
-        <tr v-for="(time, no) in selectedTimes" :key="time.ticketNum">
+        <tr v-for="(time, no) in ticketInfo.selectedTimes" :key="time.ticketNum">
           <td>{{no+1}}</td><td>{{time.departTime}}</td><td>{{time.arriveTime}}</td>
         </tr>
       </table>  
@@ -42,7 +42,7 @@
     </v-col>
 
     <v-col class="col-auto mt-6">
-      <v-btn class="edit-btn" color="#03A9F4" large>수정</v-btn>
+      <v-btn class="edit-btn" color="#03A9F4" @click="$router.go(-1)" large>수정</v-btn>
     </v-col>
     <v-spacer></v-spacer>
     <v-col class="col-auto mt-6">
@@ -56,71 +56,67 @@ export default {
   props: {
     dpt: {
       type: String,
-      required: true
     },
     arr: {
       type: String,
-      required: true
     },
     adult: {
       type: String,
-      required: true
     },
     child: {
       type: String,
-      required: true
     },
     date: {
       type: String,
-      required: true
     },
     dptime: {
       type: String,
-      required: true
     },
     selectedTimes: {
       type: Array,
-      required: true
     },
     phone: {
       type: String,
-      required: true
     },
   },
-  components: {
-    
+  data() {
+    return {
+      ticketInfo: {
+        dpt: this.dpt,
+        arr: this.arr,
+        adult: this.adult,
+        child: this.child,
+        date: this.date,
+        dptime: this.dptime,
+        selectedTimes: this.selectedTimes,
+        phone: this.phone
+      }
+    }
   },
   methods: {
+    setTicketInfo() {
+      localStorage.setItem('ticketInfo', JSON.stringify(this.ticketInfo))
+    },
+    getTicketInfo() {
+      this.ticketInfo = JSON.parse(localStorage.getItem('ticketInfo'))
+    },
     submitForm() {
       const profile = this.$store.getters.getUser
-      const tickets = this.selectedTimes.map(ticket => {
+      const tickets = this.ticketInfo.selectedTimes.map(ticket => {
         return ticket.ticketNumber
       })
-      console.log({
-        srtId: profile.srtId,
-        srtPw: profile.srtPassword,
-        logintype: profile.loginType,
-        dpt: this.dpt,
-        arr: this.arr,
-        adult: this.adult,
-        child: this.child,
-        date: this.date,
-        dptime: this.dptime,
-        ticketnum: tickets,
-        phone: this.phone
-      })
       this.$store.dispatch('submitForm', {
-        srtId: profile.srtId,
-        srtPw: profile.srtPassword,
+        srtid: profile.srtId,
+        srtpw: profile.srtPassword,
         logintype: profile.loginType,
-        dpt: this.dpt,
-        arr: this.arr,
-        adult: this.adult,
-        child: this.child,
-        date: this.date,
-        dptime: this.dptime,
-        ticketnum: tickets,
-        phone: this.phone
+        dpt: this.ticketInfo.dpt,
+        arr: this.ticketInfo.arr,
+        adult: this.ticketInfo.adult,
+        child: this.ticketInfo.child,
+        date: this.ticketInfo.date,
+        dptime: this.ticketInfo.dptime,
+        ticketnum: tickets.join(','),
+        phone: this.ticketInfo.phone
       })
     }
   },
@@ -128,7 +124,17 @@ export default {
     formatedDate() {
       const [year, month, day] = this.date.split('-')
       return `${year} 년  ${month} 월  ${day} 일`
+    },
+  },
+  created() {
+    if ('ticketInfo' in localStorage) {
+      this.getTicketInfo()
+    } else {
+      this.setTicketInfo()
     }
+  },
+  beforeDestroy() {
+    localStorage.removeItem('ticketInfo')
   }
 };
 </script>

@@ -10,7 +10,9 @@ export default new Vuex.Store({
   state: {
     user: null,
     loading: false,
-    error: false
+    error: false,
+    completedTickets: [],
+    uncompletedTickets: []
   },
   getters: {
     isAuthenticated(state) {
@@ -18,19 +20,37 @@ export default new Vuex.Store({
     },
     getUser(state) {
       return state.user
-    }
-
+    },
+    getCompletedTicketList(state) {
+      return state.completedTickets
+    },
+    getUncompletedTicketList(state) {
+      return state.uncompletedTickets
+    },
   },
   mutations: {
     setUser(state, payload) {
       state.user = payload
     },
-    setError (state, payload) {
+    setError(state, payload) {
       state.error = payload
     },
-    setLoading (state, payload) {
+    setLoading(state, payload) {
       state.loading = payload
-    }  
+    },
+    setUserTicketList(state, payload) {
+      const uncompleted = []
+      const completed = []
+      for (let i=0; i < payload.length; i++) {
+        if (payload[i].is_complete === true) {
+          completed.push(payload[i])
+        } else {
+          uncompleted.push(payload[i])
+        }
+      }
+      state.uncompletedTickets = uncompleted
+      state.completedTickets = completed
+    }
   },
   actions: {
 
@@ -71,6 +91,8 @@ export default new Vuex.Store({
         commit('setLoading', false)
       }).catch(err => {
         // console.log(err.message)
+        localStorage.removeItem('user')
+        router.push({name: 'login'}).catch(err => {})
         commit('setLoading', false)
         commit('setError', err.message)
       })
@@ -81,14 +103,17 @@ export default new Vuex.Store({
       const user = JSON.parse(localStorage.getItem('user'))
       api.userLogout(user.token).then(() => {
         alert('정상적으로 로그아웃 되었습니다.')
-        localStorage.removeItem('user')
-        commit('setUser', null)
         commit('setLoading', false)
+        commit('setUser', null)
+        localStorage.removeItem('user')
         router.push({name: 'login'}).catch(err => {})
       }).catch(err => {
         // console.log(err.message)
+        commit('setUser', null)
         commit('setLoading', false)
         commit('setError', err.message)
+        localStorage.removeItem('user')
+        router.push({name: 'login'}).catch(err => {})
       })
     },
 
@@ -96,30 +121,28 @@ export default new Vuex.Store({
       commit('setLoading', true)
       const user = JSON.parse(localStorage.getItem('user'))
       api.submitForm(payload, user.token).then(() => {
-        alert('db 저장 완료')
-        commit('setUser', null)
+        // commit('setUser', null)
         commit('setLoading', false)
+        alert('신청이 완료되었습니다.')
+        router.push({name: 'home'}).catch(err => {})
       }).catch(err => {
         console.log(err.message)
         commit('setLoading', false)
         commit('setError', err.message)
+        router.push({name: 'home'}).catch(err => {})
       })
     },
 
-    // 장고로 저장하기
-    // payload: {
-
-    // }
-    setNewTicket({commit}, payload) {
-
-    },
-
-    // 장고에서 불러오기
-    // payload: {
-
-    // }
-    getTicket({commit}, payload) {
-
+    userTickets({commit}) {
+      commit('setLoading', true)
+      const user = JSON.parse(localStorage.getItem('user'))
+      api.userTickets(user.token).then(tickets => {
+        commit('setUserTicketList', tickets.data)
+        commit('setLoading', false)
+      }).catch(err => {
+        commit('setLoading', false)
+        commit('setError', err.message)
+      })
     }
   }
 })

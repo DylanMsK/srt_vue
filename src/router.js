@@ -34,8 +34,8 @@ export default new Router({
       component: () => import('@/views/TicketingCheckView.vue')
     },
     {
-      path: '/riRnf',
-      name: 'admin',
+      path: '/manage',
+      name: 'manage',
       component: () => import('@/views/AdminView.vue')
     },
   ],

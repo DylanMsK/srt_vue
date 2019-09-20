@@ -25,9 +25,10 @@ new Vue({
   store,
   vuetify,
   created() {
-    const user = localStorage.getItem('user')
-    if (user) {
-      store.dispatch('autoLogin', JSON.parse(user))
+    if ('user' in localStorage) {
+      store.dispatch('autoLogin', JSON.parse(localStorage.getItem('user')))
+    } else {
+      router.push({name: 'login'}).catch(err => {})
     }
   },
   render: h => h(App)

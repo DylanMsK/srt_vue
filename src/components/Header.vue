@@ -1,10 +1,10 @@
 <template>
-  <v-app-bar app flat color="#fafafa" class="py-0 px-sm-12">
+  <v-app-bar app flat color="#fafafa" class="py-0 px-sm-12" style="display: contents;">
     <v-toolbar-title @click="goTo('home')">SRTicket</v-toolbar-title>
 
     <v-spacer></v-spacer>
 
-    <v-toolbar-items v-if="isAuthenticated">
+    <v-toolbar-items v-show="isAuthenticated">
       <!-- <v-btn text @click="goTo('admin')">관리자</v-btn>
       <v-btn text @click="checkUser">체크유저</v-btn> -->
       <v-btn text @click="signout">로그아웃</v-btn>
@@ -15,6 +15,7 @@
 
 
 <script>
+/* eslint-disable */
 import router from '@/router'
 
 export default {
@@ -26,7 +27,6 @@ export default {
     },
     signout() {
       this.$store.dispatch('userLogout')
-      this.$router.push({name: 'login'})
     },
     checkUser() {
       console.log(this.$store.getters.getUser)
