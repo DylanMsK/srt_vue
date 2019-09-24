@@ -83,9 +83,9 @@ export default new Vuex.Store({
         localStorage.setItem('user', JSON.stringify(res.data.user))
         commit('setUser', res.data.profile)
         commit('setLoading', false)
-        router.push({name: 'home'}).catch(err => {})
+        router.push({name: 'home'}).catch(() => {})
       }).catch(err => {
-        // console.log(err.message)
+        alert('아이디와 비밀번호를 확인해 주세요.')
         commit('setLoading', false)
         commit('setError', err.message)
       })
@@ -99,13 +99,12 @@ export default new Vuex.Store({
         } else {
           localStorage.removeItem('user')
           commit('setUser', null)
-          router.push({name: 'login'}).catch(err => {})
+          router.push({name: 'login'}).catch(() => {})
         }
         commit('setLoading', false)
       }).catch(err => {
-        // console.log(err.message)
         localStorage.removeItem('user')
-        router.push({name: 'login'}).catch(err => {})
+        router.push({name: 'login'}).catch(() => {})
         commit('setLoading', false)
         commit('setError', err.message)
       })
