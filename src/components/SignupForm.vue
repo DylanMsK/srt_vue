@@ -4,12 +4,12 @@
       <v-form lazy-validation class="mt-12">
         <small>SRT사이트에서 사용하는 아이디/비밀번호와 동일하게 가입해주세요.</small>
         <v-radio-group class="mt-12" v-model="loginType" hide-details row>
-          <v-radio label="휴대폰" value="phone" input-value="true"></v-radio>
-          <v-radio label="이메일" value="email"></v-radio>
-          <v-radio label="멤버쉽" value="membership"></v-radio>
+          <v-radio label="휴대폰" value="3" input-value="true"></v-radio>
+          <v-radio label="이메일" value="2"></v-radio>
+          <v-radio label="멤버쉽" value="1"></v-radio>
         </v-radio-group>
         <v-text-field
-          v-if="loginType === 'phone'"
+          v-if="loginType === '3'"
           class="mt-4"
           v-model="phone"
           :error-messages="phoneErrors"
@@ -19,7 +19,7 @@
           required
         ></v-text-field>
         <v-text-field
-          v-else-if="loginType === 'email'"
+          v-else-if="loginType === '2'"
           class="mt-4"
           v-model="email"
           :error-messages="emailErrors"
@@ -64,7 +64,7 @@
         ></v-text-field>
 
         <v-text-field
-          v-if="loginType !== 'phone'"
+          v-if="loginType !== '3'"
           class="mt-4"
           v-model="phone"
           :error-messages="phoneErrors"
@@ -118,7 +118,7 @@ export default {
   },
   data() {
     return {
-      loginType: 'phone',
+      loginType: '3',
       phone: '',
       email: '',
       membership: '',
@@ -129,7 +129,7 @@ export default {
   methods: {
     clear() {
       this.$v.$reset()
-      this.loginType = 'phone'
+      this.loginType = '3'
       this.phone = ''
       this.email = ''
       this.membership = ''
@@ -142,9 +142,9 @@ export default {
         console.log('Validation Error!!')
         } else {
           let srtId = ''
-          if (this.loginType === 'membership') {
+          if (this.loginType === '1') {
             srtId = this.membership
-          } else if (this.loginType === 'phone') {
+          } else if (this.loginType === '3') {
             srtId = this.phone
           } else {
             srtId = this.email
@@ -156,8 +156,6 @@ export default {
             phone: this.phone
           })
         this.clear()
-        alert('회원가입이 완료되었습니다. 다시 로그인 해주세요.')
-        this.$router.push({name: 'login'})
       }
     },
   },

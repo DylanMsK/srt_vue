@@ -144,6 +144,7 @@
 </template>
 
 <script>
+import api from '@/api'
 import { validationMixin } from 'vuelidate'
 import { required, numeric, minLength, maxLength, sameAs } from 'vuelidate/lib/validators'
 
@@ -156,7 +157,7 @@ export default {
                    '동대구', '신경주', '울산(통도사)', '부산', '공주', '익산',
                    '정읍', '광주송정', '나주', '목포'],
       numbers: ['0', '1', '2', '3', '4', '5', '6', '7', '8'],
-      timeList: ['04', '05', '06', '07', '08', '09', '10', '11', '12', '13',
+      timeList: ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13',
                  '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'],
       headers: [
         {
@@ -300,35 +301,7 @@ export default {
       if (this.$v.invalid) {
         console.log('Validation Error!!')
       } else {
-        const profile = this.$store.getters.getUser
-        const tickets = this.selectedTimes.map(ticket => {
-          return ticket.ticketNumber
-        })
-        console.log({
-          srtId: profile.srtId,
-          srtPw: profile.srtPassword,
-          logintype: profile.loginType,
-          dpt: this.depart,
-          arr: this.arrive,
-          adult: this.adult,
-          child: this.child,
-          date: this.date,
-          dptime: this.time,
-          ticketnum: tickets,
-          phone: profile.phone
-        })
-        // this.$store.dispatch('createReservation', {
-          // id: this.userInfo.id,
-          // password: this.userInfo.password,
-          // uid: this.userInfo.uid,
-          // depart: this.depart,
-          // arrive: this.arrive,
-          // adult: this.adult,
-          // child: this.child,
-          // date: this.date,
-          // tickets: tickets
-        // })
-        // this.clear()
+
       }
     },
   },
@@ -380,9 +353,18 @@ export default {
       return errors
     }
   },
+  watch: {
+    time() {
+      const formattedDate = this.date.replace('-', '')
+      api.getSchedules(this.depart, this.arrive, formattedDate, this.time).then(res => {
+        this.tickets = res.data
+      }
+      )
+    }
+  },
   created() {
     this.initializeData()
-  }
+  },
 }
 </script>
 

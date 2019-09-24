@@ -55,13 +55,26 @@ export default new Vuex.Store({
   actions: {
 
     userRegister({commit}, payload) {
-      api.userRegister(payload).then(res => {
-        commit('setLoading', false)
-      }).catch(err => {
-        // console.log(err.message)
-        commit('setLoading', false)
-        commit('setError', err.message)
+      commit('setLoading', true)
+      api.checkLogin(payload).then(res => {
+        if (res.data === true) {
+          api.userRegister(payload).then(() => {
+            commit('setLoading', false)
+            alert('회원가입이 완료되었습니다. 다시 로그인 해주세요.')
+            router.push({name: 'login'}).catch(() => {})
+          }).catch(err => {
+            alert('회원가입 오류입니다. 다시 진행해 주세요.')
+            commit('setLoading', false)
+            commit('setError', err.message)
+            router.push({name: 'signup'}).catch(() => {})
+          })
+        } else {
+          commit('setLoading', false)
+          alert('SRT 홈페이지에서 사용하는 아이디와 비밀번호로 회원가입해 주세요.')
+          router.push({name: 'signup'}).catch(() => {})
+        }
       })
+
     },
 
     userLogin({commit}, payload) {

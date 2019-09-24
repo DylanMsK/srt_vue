@@ -105,10 +105,16 @@ export default {
       const tickets = this.ticketInfo.selectedTimes.map(ticket => {
         return ticket.ticketNumber
       })
+      const loginMap = {
+        membership: '1',
+        email: '2',
+        phone: '3'
+      }
+      console.log(loginMap[profile.loginType])
       this.$store.dispatch('submitForm', {
         srtid: profile.srtId,
         srtpw: profile.srtPassword,
-        logintype: profile.loginType,
+        logintype: loginMap[profile.loginType],
         dpt: this.ticketInfo.dpt,
         arr: this.ticketInfo.arr,
         adult: this.ticketInfo.adult,

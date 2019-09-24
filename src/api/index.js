@@ -7,6 +7,10 @@ const ticketUrl = rootPath + 'tickets/'
 
 export default {
   
+  checkLogin(params) {
+    return axios.get(`https://9cpa5xyu8j.execute-api.ap-northeast-2.amazonaws.com/default/srtid_check?srtid=${params.username}&srtpw=${params.password}&logintype=${params.loginType}`)
+  },
+
   userRegister(params) {
     return axios.post(`${authUrl}register/`, params)
   },
@@ -21,6 +25,10 @@ export default {
 
   userLogout(token) {
     return axios.post(`${authUrl}logout/`, {headers: {'Authorization': 'srt '+ token}})
+  },
+
+  getSchedules(dpt, arr, date, time) {
+    return axios.get(`https://ahg58uol78.execute-api.ap-northeast-2.amazonaws.com/default/get_srt_time?dpt=${dpt}&arr=${arr}&date=${date}&dptime=${time}`)
   },
 
   submitForm(params, token) {
