@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-// const rootPath = 'http://127.0.0.1:8000/'
-const rootPath = 'https://autosrt-v2.herokuapp.com/'
+const rootPath = 'http://127.0.0.1:8000/'
+// const rootPath = 'https://autosrt-v2.herokuapp.com/'
 const authUrl = rootPath + 'accounts/'
 const ticketUrl = rootPath + 'tickets/'
 

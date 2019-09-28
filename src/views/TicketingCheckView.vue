@@ -2,7 +2,7 @@
   <v-row no-gutters>
     <v-col class="col-12 mt-6 mt-sm-0" style="display:flex">
       <span class="sub-header">탑승날짜</span>
-      <span class="content">{{ticketInfo.formatedDate}}</span>
+      <span class="content">{{formatedDate}}</span>
     </v-col>
 
     <v-col class="col-6 mt-6">
@@ -23,7 +23,7 @@
       <span class="content">{{ticketInfo.child}} 명</span>
     </v-col>
 
-    <v-col class="col-12 mt-6 mb-1">
+    <v-col class="col-12 mt-6">
       <span class="sub-header">탑승희망시간</span>
     </v-col>
     <v-col class="col-12 mt-1">
@@ -35,6 +35,11 @@
           <td>{{no+1}}</td><td>{{time.departTime}}</td><td>{{time.arriveTime}}</td>
         </tr>
       </table>  
+    </v-col>
+
+    <v-col class="col-12 mt-6 mb-1">
+      <span class="sub-header">수수료</span>
+      <span class="content">{{fee}} P</span>
     </v-col>
 
     <v-col class="col-12 mt-6">
@@ -78,6 +83,9 @@ export default {
     phone: {
       type: String,
     },
+    fee: {
+      type: Number,
+    }
   },
   data() {
     return {

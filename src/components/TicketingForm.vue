@@ -154,8 +154,8 @@ export default {
     return {
       userInfo: null,
       stations: ['수서', '동탄', '지제', '천안안산', '오송', '대전', '김천(구미)',
-                   '동대구', '신경주', '울산(통도사)', '부산', '공주', '익산',
-                   '정읍', '광주송정', '나주', '목포'],
+                 '동대구', '신경주', '울산(통도사)', '부산', '공주', '익산',
+                 '정읍', '광주송정', '나주', '목포'],
       numbers: ['0', '1', '2', '3', '4', '5', '6', '7', '8'],
       timeList: ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13',
                  '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'],
@@ -260,6 +260,34 @@ export default {
   methods: {
     checkReserve() {
       const profile = this.$store.getters.getUser
+      const stationsIndex = {
+        '수서': 1,
+        '동탄': 2,
+        '지제': 3,
+        '천안안산': 4,
+        '오송': 5,
+        '대전': 6,
+        '김천(구미)': 7,
+        '동대구': 8,
+        '신경주': 9,
+        '울산(통도사)': 10,
+        '부산': 11,
+        '공주': 6,
+        '익산': 7,
+        '정읍': 8,
+        '광주송정': 9,
+        '나주': 10,
+        '목포': 11
+      }
+      const stationsDifference = Math.abs(stationsIndex[this.arrive] - stationsIndex[this.depart])
+      let fee = 0
+      if (stationsDifference <= 5) {
+        fee = 3000
+      } else if (stationsDifference <= 8) {
+        fee = 4000
+      } else {
+        fee = 5000
+      }
       this.$router.push({name: 'checkReserve', params: {
         dpt: this.depart,
         arr: this.arrive,
@@ -268,7 +296,8 @@ export default {
         date: this.date,
         dptime: this.time,
         selectedTimes: this.selectedTimes,
-        phone: profile.phone
+        phone: profile.phone,
+        fee: fee * (Number(this.adult) + Number(this.child))
       }})
     },
     initializeData() {
@@ -295,14 +324,6 @@ export default {
     closeSignupModal() {
       this.dialog = !this.dialog;
       this.$refs.signup.clear();
-    },
-    createReservation() {
-      this.$v.$touch()
-      if (this.$v.invalid) {
-        console.log('Validation Error!!')
-      } else {
-
-      }
     },
   },
   computed: {

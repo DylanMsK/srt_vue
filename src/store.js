@@ -57,7 +57,12 @@ export default new Vuex.Store({
     userRegister({commit}, payload) {
       commit('setLoading', true)
       api.checkLogin(payload).then(res => {
-        if (res.data === true) {
+        /*
+        res.data == 1     ==> 정상 로그인
+        res.data == 2     ==> 없는 아이디
+        res.data == 3     ==> 비밀번호 오류
+        */
+        if (res.data === 1) {
           api.userRegister(payload).then(() => {
             commit('setLoading', false)
             alert('회원가입이 완료되었습니다. 다시 로그인 해주세요.')
@@ -68,11 +73,19 @@ export default new Vuex.Store({
             commit('setError', err.message)
             router.push({name: 'signup'}).catch(() => {})
           })
-        } else {
+        } else if (res.data === 2) {
+          alert('SRT 홈페이지에 등록된 회원이 아닙니다. 아이디를 확인해 주세요.')
           commit('setLoading', false)
-          alert('SRT 홈페이지에서 사용하는 아이디와 비밀번호로 회원가입해 주세요.')
+        } else {
+          alert('비밀번호가 일치하지 않습니다. 비밀번호를 확인해 주세요. 3회 이상 틀릴시 계정이 정지됩니다.')
+          commit('setLoading', false)
           router.push({name: 'signup'}).catch(() => {})
         }
+      }).catch(err => {
+        alert('서버 오류입니다. 현재 서비스를 이용할 수 없습니다.')
+        commit('setLoading', false)
+        commit('setError', err.message)
+        router.push({name: 'login'}).catch(() => {})
       })
 
     },
