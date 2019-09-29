@@ -289,6 +289,7 @@ export default {
         fee = 5000
       }
       this.$router.push({name: 'checkReserve', params: {
+        user: this.user,
         dpt: this.depart,
         arr: this.arrive,
         adult: this.adult,
@@ -320,10 +321,6 @@ export default {
     },
     clear() {
       this.$v.$reset()
-    },
-    closeSignupModal() {
-      this.dialog = !this.dialog;
-      this.$refs.signup.clear();
     },
   },
   computed: {

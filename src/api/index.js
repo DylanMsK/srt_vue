@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const rootPath = 'http://127.0.0.1:8000/'
-// const rootPath = 'https://autosrt-v2.herokuapp.com/'
+// const rootPath = 'http://127.0.0.1:8000/'
+const rootPath = 'https://autosrt-v2.herokuapp.com/'
 const authUrl = rootPath + 'accounts/'
 const ticketUrl = rootPath + 'tickets/'
 
@@ -29,6 +29,10 @@ export default {
 
   getSchedules(dpt, arr, date, time) {
     return axios.get(`https://ahg58uol78.execute-api.ap-northeast-2.amazonaws.com/default/get_srt_time?dpt=${dpt}&arr=${arr}&date=${date}&dptime=${time}`)
+  },
+
+  subtractPoint(params, token) {
+    return axios.patch(`${authUrl}edit/`, params, {headers: {"Authorization": "srt " + token}})
   },
 
   submitForm(params, token) {

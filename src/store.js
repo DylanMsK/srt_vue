@@ -133,7 +133,6 @@ export default new Vuex.Store({
         localStorage.removeItem('user')
         router.push({name: 'login'}).catch(err => {})
       }).catch(err => {
-        // console.log(err.message)
         commit('setUser', null)
         commit('setLoading', false)
         commit('setError', err.message)
@@ -142,11 +141,21 @@ export default new Vuex.Store({
       })
     },
 
+    subtractPoint({commit}, payload) {
+      commit('setLoading', true)
+      const user = JSON.parse(localStorage.getItem('user'))
+      api.subtractPoint(payload, user.token).then(() => {
+        commit('setLoading', false)
+      }).catch(err => {
+        commit('setLoading', false)
+        commit('setError', err.message)
+      })
+    },
+
     submitForm({commit}, payload) {
       commit('setLoading', true)
       const user = JSON.parse(localStorage.getItem('user'))
       api.submitForm(payload, user.token).then(() => {
-        // commit('setUser', null)
         commit('setLoading', false)
         alert('신청이 완료되었습니다.')
         router.push({name: 'home'}).catch(err => {})

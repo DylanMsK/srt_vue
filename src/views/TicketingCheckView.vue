@@ -59,6 +59,9 @@
 <script>
 export default {
   props: {
+    user: {
+      type: Object,
+    },
     dpt: {
       type: String,
     },
@@ -109,20 +112,13 @@ export default {
       this.ticketInfo = JSON.parse(localStorage.getItem('ticketInfo'))
     },
     submitForm() {
-      const profile = this.$store.getters.getUser
       const tickets = this.ticketInfo.selectedTimes.map(ticket => {
         return ticket.ticketNumber
       })
-      const loginMap = {
-        membership: '1',
-        email: '2',
-        phone: '3'
-      }
-      console.log(loginMap[profile.loginType])
       this.$store.dispatch('submitForm', {
-        srtid: profile.srtId,
-        srtpw: profile.srtPassword,
-        logintype: loginMap[profile.loginType],
+        srtid: this.user.srtId,
+        srtpw: this.user.srtPassword,
+        logintype: this.user.loginType,
         dpt: this.ticketInfo.dpt,
         arr: this.ticketInfo.arr,
         adult: this.ticketInfo.adult,
@@ -147,8 +143,10 @@ export default {
       this.setTicketInfo()
     }
   },
-  beforeDestroy() {
-    localStorage.removeItem('ticketInfo')
+  async beforeDestroy() {
+    await this.$store.dispatch('subtractPoint', {point: this.user.point-this.fee}).then(() => {
+      localStorage.removeItem('ticketInfo')
+    })
   }
 };
 </script>
