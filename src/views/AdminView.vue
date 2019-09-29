@@ -1,26 +1,45 @@
 <template>
-  <v-container>
-    <p>Admin page</p>
-    <v-text-field
-      v-model="email"
-      label="아이디"
-    ></v-text-field>
-    <v-btn>추가</v-btn>
-    <v-btn>체크</v-btn>
-  </v-container>
+  <v-row no-gutters>
+    <v-col class="col-12 mb-12 my-6">
+      <v-row align="center" justify="center">
+        <v-btn-toggle v-model="selected" mandatory>
+          <v-btn value="users" text style="width: 100px;">Users</v-btn>
+          <v-btn value="tickets" text style="width: 100px;">Tickets</v-btn>
+        </v-btn-toggle>
+      </v-row>
+    </v-col>
+
+    <v-col class="col-12 mb-12">
+      <AdminTicketsTable/>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
-export default {
-  name: "AdminPage",
-  data() {
-    return {
-      email: '',
-    }
-  },
-  methods: {
-  },
-  created() {
+  import AdminTicketsTable from '@/components/AdminTicketsTable'
+
+  export default {
+    components: {
+      AdminTicketsTable
+    },
+    data() {
+      return {
+        selected: 'tickets'
+      }
+    },
+    methods: {
+      checked() {
+        console.log(this.selected)
+      },
+      checkRole() {
+        const role = this.$store.getters.getRole
+        if (role !== 'admin') {
+          location="/"
+        }
+      }
+    },
+    created () {
+      this.checkRole()
+    },
   }
-}
 </script>

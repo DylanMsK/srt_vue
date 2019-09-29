@@ -46,7 +46,6 @@
           @input="$v.password.$touch()"
           @blur="$v.password.$touch()"
           label="비밀번호"
-          type="password"
           @keyup.enter="userRegister"
           required
         ></v-text-field>
@@ -58,7 +57,6 @@
           @input="$v.checkPassword.$touch()"
           @blur="$v.checkPassword.$touch()"
           label="비밀번호"
-          type="password"
           @keyup.enter="userRegister"
           required
         ></v-text-field>
