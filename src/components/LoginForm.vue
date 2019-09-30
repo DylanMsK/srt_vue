@@ -101,7 +101,7 @@ export default {
   },
   methods: {
     isAuthenticated() {
-      return this.$store.getters.isAuthenticated
+      return this.$store.getters['auth/isAuthenticated']
     },
     goTo(pathName) {
       this.$router.push({name: pathName})
@@ -126,7 +126,7 @@ export default {
           } else {
             srtId = this.email
           }
-          this.$store.dispatch('userLogin', {
+          this.$store.dispatch('auth/userLogin', {
             username: srtId,
             password: this.password
           })

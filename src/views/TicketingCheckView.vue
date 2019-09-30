@@ -115,7 +115,7 @@ export default {
       const tickets = this.ticketInfo.selectedTimes.map(ticket => {
         return ticket.ticketNumber
       })
-      this.$store.dispatch('submitForm', {
+      this.$store.dispatch('user/submitForm', {
         srtid: this.user.srtId,
         srtpw: this.user.srtPassword,
         logintype: this.user.loginType,
@@ -144,7 +144,7 @@ export default {
     }
   },
   async beforeDestroy() {
-    await this.$store.dispatch('subtractPoint', {point: this.user.point-this.fee}).then(() => {
+    await this.$store.dispatch('user/subtractPoint', {point: this.user.point-this.fee}).then(() => {
       localStorage.removeItem('ticketInfo')
     })
   }

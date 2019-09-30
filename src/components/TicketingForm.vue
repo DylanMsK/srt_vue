@@ -259,7 +259,7 @@ export default {
   },
   methods: {
     checkReserve() {
-      const profile = this.$store.getters.getUser
+      const profile = this.$store.getters['auth/getUser']
       const stationsIndex = {
         '수서': 1,
         '동탄': 2,
@@ -288,6 +288,7 @@ export default {
       } else {
         fee = 5000
       }
+      // console.log(`어른: ${this.adult}, 아이: ${this.child}, 요금: ${fee}`)
       this.$router.push({name: 'checkReserve', params: {
         user: this.user,
         dpt: this.depart,
@@ -302,7 +303,7 @@ export default {
       }})
     },
     initializeData() {
-      this.user = this.$store.getters.getUser
+      this.user = this.$store.getters['auth/getUser']
       this.phone = this.user.phone
     },
     formatDate(date) {

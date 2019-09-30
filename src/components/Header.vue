@@ -25,16 +25,16 @@ export default {
       router.push({name: pathName}).catch(err => {})
     },
     signout() {
-      this.$store.dispatch('userLogout')
+      this.$store.dispatch('auth/userLogout')
     },
     
   },
   computed: {
     isAuthenticated() {
-      return this.$store.getters.isAuthenticated
+      return this.$store.getters['auth/isAuthenticated']
     },
     checkRole() {
-      const role = this.$store.getters.getRole
+      const role = this.$store.getters['auth/getRole']
       if (role === 'admin') {
         return true
       } else {

@@ -147,7 +147,7 @@ export default {
           } else {
             srtId = this.email
           }
-          this.$store.dispatch('userRegister', {
+          this.$store.dispatch('auth/userRegister', {
             loginType: this.loginType,
             username: srtId,
             password: this.password,

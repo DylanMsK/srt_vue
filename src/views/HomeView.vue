@@ -46,37 +46,43 @@ export default {
   },
   data() {
     return {
-      point: 0
+      point: 0,
     }
   },
   methods: {
     isAuthenticated() {
-      return this.$store.getters.isAuthenticated
+      return this.$store.getters['auth/isAuthenticated']
     },
     goTo(pathName) {
       this.$router.push({name: pathName})
     },
     initializeData() {
-      this.$store.dispatch('userTickets')
+      this.$store.dispatch('user/userTickets')
     },
   },
   computed: {
     getUserPoint() {
-      if (this.$store.getters.getUser) {
-        return this.$store.getters.getUser.point
+      if (this.$store.getters['auth/getUser']) {
+        return this.$store.getters['auth/getUser'].point
       } else {
         return 0
       }
     },
     uncompletedTicketList() {
-      return this.$store.getters.getUncompletedTicketList
+      if (this.$store.getters['user/getUncompletedTicketList']) {
+        return this.$store.getters['user/getUncompletedTicketList']
+      }
+      return []
     },
     completedTicketList() {
-      return this.$store.getters.getCompletedTicketList
+      if (this.$store.getters['user/getCompletedTicketList']) {
+        return this.$store.getters['user/getCompletedTicketList']
+      }
+      return []
     }
   },
-  created() {
-    this.initializeData()
+  async created() {
+    await this.initializeData()
   }
 };
 </script>

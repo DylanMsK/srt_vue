@@ -32,7 +32,7 @@
         console.log(this.selected)
       },
       checkRole() {
-        const role = this.$store.getters.getRole
+        const role = this.$store.getters['auth/getRole']
         if (role !== 'admin') {
           location="/"
         }

@@ -21,16 +21,16 @@ firebase.initializeApp(firebaseConfig)
 
 new Vue({
   el: '#app',
-  router,
-  store,
-  vuetify,
   created() {
     if ('user' in localStorage) {
-      store.dispatch('autoLogin', JSON.parse(localStorage.getItem('user')))
+      store.dispatch('auth/autoLogin', JSON.parse(localStorage.getItem('user')))
     } else {
       // eslint-disable-next-line
       router.push({name: 'login'}).catch(err => {})
     }
   },
+  router,
+  store,
+  vuetify,
   render: h => h(App)
 })
