@@ -69,16 +69,10 @@ export default {
       }
     },
     uncompletedTicketList() {
-      if (this.$store.getters['user/getUncompletedTicketList']) {
-        return this.$store.getters['user/getUncompletedTicketList']
-      }
-      return []
+      return this.$store.getters['user/getUncompletedTicketList']
     },
     completedTicketList() {
-      if (this.$store.getters['user/getCompletedTicketList']) {
-        return this.$store.getters['user/getCompletedTicketList']
-      }
-      return []
+      return this.$store.getters['user/getCompletedTicketList']
     }
   },
   async created() {

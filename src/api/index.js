@@ -44,9 +44,20 @@ export default {
     return axios.get(`${ticketUrl}`, {headers: {"Authorization": "srt " + token}})
   },
 
-  adminTickets(token) {
+  getUserTickets(token) {
     return axios.get(`${adminUrl}tickets/`, {headers: {"Authorization": "srt " + token}})
+  },
+
+  editUserTicket(params, token) {
+    return axios.patch(`${adminUrl}tickets/${params.id}/`, params, {headers: {"Authorization": "srt " + token}})
+  },
+
+  getUserProfiles(token) {
+    return axios.get(`${adminUrl}profiles/`, {headers: {"Authorization": "srt " + token}})
+  },
+
+  editUserProfile(params, token) {
+    return axios.patch(`${adminUrl}profiles/${params.id}/`, params, {headers: {"Authorization": "srt " + token}})
   }
-  
 
 }

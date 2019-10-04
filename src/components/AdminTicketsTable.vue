@@ -1,70 +1,124 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="desserts"
-    :search="search"
-  >
-    <template v-slot:top>
-      <v-toolbar flat color="white">
-        <v-text-field
-          v-model="search"
-          append-icon="search"
-          label="Search"
-          single-line
-          hide-details
-        ></v-text-field>
-        <v-dialog v-model="dialog" max-width="300px">
-          <v-card>
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.name" label="Dessert name"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.calories" label="Calories"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.fat" label="Fat (g)"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.carbs" label="Carbs (g)"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.protein" label="Protein (g)"></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+  <v-row>
+    <v-col cols="12">
+      <v-text-field
+        v-model="search"
+        label="휴대폰 번호로 검색"
+        single-line
+        hide-details
+      ></v-text-field>
+    </v-col>
+    <v-col cols="12">
+      <v-data-table
+        :headers="headers"
+        :items="tickets"
+        disable-sort
+        disable-filtering
+        dark
+      >
+        <template v-slot:top>
+            <v-dialog v-model="dialog" max-width="300px">
+              <v-card>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="editedTicket.srtid" label="SrtId" readonly></v-text-field>
+                      </v-col>
+                      <v-col cols="6" md="4">
+                        <v-text-field v-model="editedTicket.dpt" label="출발역" readonly></v-text-field>
+                      </v-col>
+                      <v-col cols="6" md="4">
+                        <v-text-field v-model="editedTicket.arr" label="도착역" readonly></v-text-field>
+                      </v-col>
+                      <v-col cols="6" md="4">
+                        <v-text-field v-model="editedTicket.adult" label="어른" readonly></v-text-field>
+                      </v-col>
+                      <v-col cols="6" md="4">
+                        <v-text-field v-model="editedTicket.child" label="아이" readonly></v-text-field>
+                      </v-col>
+                      <v-col cols="6" md="4">
+                        <v-text-field v-model="editedTicket.date" label="날짜" readonly></v-text-field>
+                      </v-col>
+                      <v-col cols="6" md="4">
+                        <v-text-field v-model="editedTicket.dptime" label="출발시간" readonly></v-text-field>
+                      </v-col>
+                      <v-col cols="4">
+                        <v-text-field v-model="editedTicket.status" label="status" readonly></v-text-field>
+                      </v-col>
+                      <v-col cols="4">
+                        <v-text-field v-model="editedTicket.lambda_status" label="lambda" readonly></v-text-field>
+                      </v-col>
+                      <v-col cols="4">
+                        <v-text-field v-model="editedTicket.is_complete" label="is_complete" readonly></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
 
-            <v-card-actions>
-              <div class="flex-grow-1"></div>
-              <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="save">Save</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
-    <template v-slot:item.action="{ item }">
-      <v-icon
-        small
-        class="mr-2"
-        @click="editItem(item)"
-      >
-        edit
-      </v-icon>
-      <v-icon
-        small
-        @click="deleteItem(item)"
-      >
-        delete
-      </v-icon>
-    </template>
-    <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize">Reset</v-btn>
-    </template>
-  </v-data-table>
+                <v-card-actions>
+                  <div class="flex-grow-1"></div>
+                  <v-btn color="blue darken-1" text @click="close">뒤로</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+        </template>
+        <template v-slot:item.action="{ item }">
+          <v-btn
+            small
+            class="mr-3"
+            color="success"
+            @click="editTicket(item)"
+          >
+            자세히
+          </v-btn>
+          <v-btn
+            v-if="item.is_complete && !item.status"
+            small
+            disabled
+          >
+            성공
+          </v-btn>
+          <v-btn
+            v-if="!item.is_complete && item.status"
+            small
+            class="mr-3"
+            color="#9C27B0"
+            @click="forceQuitTicketing(item)"
+          >
+            강제완료
+          </v-btn>
+          <v-btn
+            v-if="!item.is_complete && item.status"
+            small
+            color="#FF9800"
+            @click="pauseTicketing(item)"
+          >
+            일시중지
+          </v-btn>
+          <v-btn
+            v-if="!item.is_complete && !item.status"
+            small
+            color="#8BC34A"
+            @click="restartTicketing(item)"
+          >
+            재시작
+          </v-btn>
+          <v-btn
+            v-if="item.is_complete && item.status"
+            small
+            color="#D50000"
+          >
+            에러!!
+          </v-btn>
+        </template>
+        <template v-slot:no-data>
+          <v-btn color="primary" @click="initialize">Reset</v-btn>
+        </template>
+      </v-data-table>
+
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -73,35 +127,46 @@
       dialog: false,
       search: '',
       headers: [
-        { text: 'ID', align: 'left', value: 'name' },
-        { text: '출발역', sortable: false, value: 'calories' },
-        { text: '도착역', sortable: false, value: 'fat' },
-        { text: '날짜', value: 'carbs' },
-        { text: '시간', sortable: false, value: 'protein' },
-        { text: '수정/삭제', value: 'action', sortable: false },
+        { text: 'SrtId', align: 'left', value: 'srtid' },
+        { text: '휴대폰번호', sortable: false, value: 'phone' },
+        { text: '출발역', sortable: false, value: 'dpt' },
+        { text: '도착역', sortable: false, value: 'arr' },
+        { text: '날짜', sortable: false, value: 'date' },
+        { text: '시간', sortable: false, value: 'dptime' },
+        { text: 'Action', align: 'center', sortable: false, value: 'action' },
       ],
-      desserts: [],
       editedIndex: -1,
-      editedItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
+      editedTicket: {
+        srtid: '',
+        dpt: 0,
+        arr: 0,
+        date: 0,
+        dptime: 0,
       },
-      defaultItem: {
-        name: '',
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
+      defaultTicket: {
+        srtid: '',
+        dpt: 0,
+        arr: 0,
+        date: 0,
+        dptime: 0,
       },
     }),
 
     computed: {
-      formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-      },
+      tickets() {
+        if (this.$store.getters['admin/getUserTickets']) {
+          const ticketList = this.$store.getters['admin/getUserTickets']
+          if (this.search.length > 0) {
+            return ticketList.filter(ticket => {
+              return ticket.phone.match(this.search)
+            })
+          } else {
+            return ticketList
+          }
+        } else {
+          return []
+        }
+      }
     },
 
     watch: {
@@ -116,104 +181,45 @@
 
     methods: {
       initialize () {
-        this.desserts = [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-          },
-        ]
+        this.$store.dispatch('admin/getUserTickets')
       },
 
-      editItem (item) {
-        this.editedIndex = this.desserts.indexOf(item)
-        this.editedItem = Object.assign({}, item)
+      editTicket (item) {
+        this.editedIndex = this.tickets.indexOf(item)
+        this.editedTicket = Object.assign({}, item)
         this.dialog = true
       },
 
-      deleteItem (item) {
-        const index = this.desserts.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
+      forceQuitTicketing (item) {
+        this.$store.dispatch('admin/editUserTicket', { id:item.id, status: false, is_complete: true })
+      },
+
+      pauseTicketing (item) {
+        this.$store.dispatch('admin/editUserTicket', { id:item.id, status: false })
+      },
+
+      restartTicketing (item) {
+        this.$store.dispatch('admin/editUserTicket', { id:item.id, status: true })
+      },
+
+      deleteTicket (item) {
+        const index = this.tickets.indexOf(item)
+        confirm('Are you sure you want to delete this item?') && this.tickets.splice(index, 1)
       },
 
       close () {
         this.dialog = false
         setTimeout(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedTicket = Object.assign({}, this.defaultTicket)
           this.editedIndex = -1
         }, 300)
       },
 
       save () {
         if (this.editedIndex > -1) {
-          Object.assign(this.desserts[this.editedIndex], this.editedItem)
+          Object.assign(this.tickets[this.editedIndex], this.editedTicket)
         } else {
-          this.desserts.push(this.editedItem)
+          this.tickets.push(this.editedTicket)
         }
         this.close()
       },

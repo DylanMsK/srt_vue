@@ -23,6 +23,6 @@ export default {
 
 <style scoped>
 .main-content {
-  max-width: 840px !important;
+  max-width: 960px !important;
 }
 </style>

@@ -23,8 +23,14 @@ const getters = {
 
 const mutations = {
   setUser(state, payload) {
-    state.user = payload.user
-    state.role = payload.role
+    // console.log(payload)
+    if (payload === null) {
+      state.user = null
+      state.role = 'user'
+    } else {
+      state.user = payload.user
+      state.role = payload.role
+    }
   },
   setError(state, payload) {
     state.error = payload
@@ -118,8 +124,8 @@ const actions = {
       router.push({name: 'login'}).catch(err => {})
     }).catch(err => {
       commit('setUser', null)
-      commit('setLoading', false)
       commit('setError', err.message)
+      commit('setLoading', false)
       localStorage.removeItem('user')
       router.push({name: 'login'}).catch(err => {})
     })

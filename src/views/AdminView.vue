@@ -1,36 +1,40 @@
 <template>
   <v-row no-gutters>
-    <v-col class="col-12 mb-12 my-6">
-      <v-row align="center" justify="center">
+    <v-col class="col-12 mt-6 mb-2">
+      <v-row justify="center">
         <v-btn-toggle v-model="selected" mandatory>
-          <v-btn value="users" text style="width: 100px;">Users</v-btn>
+          <v-btn value="profiles" text style="width: 100px;">Users</v-btn>
           <v-btn value="tickets" text style="width: 100px;">Tickets</v-btn>
         </v-btn-toggle>
       </v-row>
     </v-col>
 
     <v-col class="col-12 mb-12">
-      <AdminTicketsTable/>
+      <AdminTicketsTable
+        v-if="selected === 'tickets'"
+      />
+      <AdminProfilesTable
+        v-else-if="selected === 'profiles'"
+      />
     </v-col>
   </v-row>
 </template>
 
 <script>
   import AdminTicketsTable from '@/components/AdminTicketsTable'
+  import AdminProfilesTable from '@/components/AdminProfilesTable'
 
   export default {
     components: {
-      AdminTicketsTable
+      AdminTicketsTable,
+      AdminProfilesTable
     },
     data() {
       return {
-        selected: 'tickets'
+        selected: 'profiles'
       }
     },
     methods: {
-      checked() {
-        console.log(this.selected)
-      },
       checkRole() {
         const role = this.$store.getters['auth/getRole']
         if (role !== 'admin') {
